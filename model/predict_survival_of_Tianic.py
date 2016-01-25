@@ -25,8 +25,6 @@ import string
 import math
 import csv
 
-# <codecell>
-
 input_data_path = "/home/zhmi/Pycharm Project/Predict_survival_of_Tianic/input_data"
 train_data_path = input_data_path + "/handled_train.csv"
 test_data_path = input_data_path + "/handled_test.csv"
