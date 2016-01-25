@@ -312,6 +312,24 @@ writeFile('predict_by_sex_age',id_survived_by_sex_age_list)
 
 # <codecell>
 
+sur_pro_id_two_features_list_two = predictSurProByTwoFeatures(test_category_record_list[0],\
+                                                          passenger_id_survived_by_sex_list,\
+                                                          passenger_id_survived_by_fare_list)
+
+id_survived_by_sex_fare_list = flagSurvivivedByOneFeature(sur_pro_id_two_features_list_two,\
+                                                          survived_num)
+writeFile('predict_by_sex_fare',id_survived_by_sex_fare_list)
+# accurancy rate : 0.58852
+
+# <codecell>
+
+sur_pro_id_two_features_list_agefare = predictSurProByTwoFeatures(test_category_record_list[0],\
+                                                          passenger_id_survived_by_age_list,\
+                                                          passenger_id_survived_by_fare_list)
+
+id_survived_by_age_fare_list = flagSurvivivedByOneFeature(sur_pro_id_two_features_list_agefare,\
+                                                          survived_num)
+writeFile('predict_by_age_fare',id_survived_by_age_fare_list)
 
 # <codecell>
 
