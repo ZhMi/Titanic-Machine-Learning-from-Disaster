@@ -25,6 +25,8 @@ import string
 import math
 import csv
 
+# <codecell>
+
 input_data_path = "/home/zhmi/Pycharm Project/Predict_survival_of_Tianic/input_data"
 train_data_path = input_data_path + "/handled_train.csv"
 test_data_path = input_data_path + "/handled_test.csv"
@@ -54,14 +56,53 @@ def mergeCategoryWithSurvived(survived_list,category_list):
 
 # <codecell>
 
-def predictSurvivedBySex(survived_num,passenger_id_list,sex_list):
-    passenger_id_sex_list = map(None,passenger_id_list,sex_list)
+def predictSurvivedProbabilityBySex(survived_male_probability,survived_female_probability,survived_num,passenger_id_list,sex_list):
+    sur_pro_sex_list = []
+    for i in sex_list:
+        if i == 0:
+            sur_pro_sex_list.append(survived_male_probability)
+        else:
+            sur_pro_sex_list.append(survived_female_probability)
+    sur_pro_id_sex_list = map(None,passenger_id_list,sur_pro_sex_list)
+    return sur_pro_id_sex_list
+
+# <codecell>
+
+def predictSurvivedProbabilityByAge( survived_child_probability,\
+                                     survived_juvenile_probability,\
+                                     survived_youth_probability,\
+                                     survived_middle_age_probability,\
+                                     survived_old_people_probability,\
+                                     survived_num,passenger_id_list,\
+                                     age_list):
+
+    sur_pro_age_list = []
+    
+    # child:0——9;   juvenile:10——17   youth:18——34 middle-age:35—59 old-people:60
+    for i in age_list:
+        if i <= 9:
+            sur_pro_age_list.append(survived_child_probability)
+        elif i >= 10 and i <= 17:
+            sur_pro_age_list.append(survived_juvenile_probability)
+        elif i >= 18 and i <= 34:
+            sur_pro_age_list.append(survived_youth_probability)
+        elif i >= 35 and i <= 59:
+            sur_pro_age_list.append(survived_middle_age_probability)
+        else :
+            sur_pro_age_list.append(survived_old_people_probability)
+               
+    sur_pro_id_age_list = map(None,passenger_id_list,sur_pro_age_list)
+    return sur_pro_id_age_list
+
+# <codecell>
+
+def flagSurvivivedByOneFeature(passenger_id_feature_list):
     passenger_id_survived_list = []
     
-    passenger_id_sex_list.sort(key = lambda x: x[1])
+    passenger_id_feature_list.sort(key = lambda x: x[1])
     passenger_id_survived_list \
-    = map(lambda x: (x[0],1),passenger_id_sex_list[-survived_num:])\
-    + map(lambda x: (x[0],0),passenger_id_sex_list[:-survived_num])
+    = map(lambda x: (x[0],1),passenger_id_feature_list[-survived_num:])\
+    + map(lambda x: (x[0],0),passenger_id_feature_list[:-survived_num])
         
     passenger_id_survived_list.sort(key = lambda x:x[0])  
     return passenger_id_survived_list
@@ -106,6 +147,8 @@ survived_num = len(filter(lambda x: x == 1,category_record_list[0])) #342
 survived_probability = float(survived_num)/total_num #0.383838383838
 print "survived_probability:",survived_probability
 
+# <codecell>
+
 # P(survived|male);P(survived|female) 
 survived_male_num = len(filter(lambda x: x[0] == 1 and x[1] == 0,survived_category_record_list[0])) #109
 survived_female_num = len(filter(lambda x: x[0] == 1 and x[1] == 1,survived_category_record_list[0])) #233
@@ -122,6 +165,7 @@ print "survived_female_probability:",survived_female_probability
 # survived_male_probability: 0.188908145581
 # survived_female_probability: 0.742038216561
 
+# <codecell>
 
 # P(survived|Age)
 # child:0——9;   juvenile:10——17   youth:18——34 middle-age:35—59 old-people:60
@@ -151,6 +195,7 @@ survived_middle_age_probability: 0.414285714286
 survived_old_people_probability: 0.269230769231
 '''
 
+# <codecell>
 
 # P(survived|Fare)
 # third-class-fare: 0--12 second-class-fare: 13--29 first-class_fare: >=30
@@ -173,7 +218,7 @@ survived_second_class_probalibity: 0.418867924528
 survived_first_class_probalibity: 0.5875
 '''
 
-
+# <codecell>
 
 test_data_list = readFile(test_data_path)
 # [['PassengerId', 'Sex', 'Age', 'Fare'],...]
@@ -185,7 +230,31 @@ for i in xrange(3):
 test_data_num = len(test_category_record_list[0])
 survived_num = int(test_data_num * survived_probability)#160
 
-passenger_id_survived_list = predictSurvivedBySex(survived_num,test_category_record_list[0],test_category_record_list[1])
-writeFile('predict_by_sex',passenger_id_survived_list)
+survived_pro_sex_list = predictSurvivedProbabilityBySex(survived_male_probability,\
+                                                   survived_female_probability,\
+                                                   survived_num,\
+                                                   test_category_record_list[0],\
+                                                   test_category_record_list[1])
+
+passenger_id_survived_by_age_list = flagSurvivivedByOneFeature(survived_pro_sex_list)
+
+writeFile('predict_by_sex',passenger_id_survived_by_age_list)
+
+# <codecell>
+
+survived_pro_age_list = predictSurvivedProbabilityByAge( survived_child_probability,\
+                                                         survived_juvenile_probability,\
+                                                         survived_youth_probability,\
+                                                         survived_middle_age_probability,\
+                                                         survived_old_people_probability,\
+                                                         survived_num,\
+                                                         test_category_record_list[0],\
+                                                         test_category_record_list[2])
+
+passenger_id_survived_by_age_list = flagSurvivivedByOneFeature(survived_pro_age_list)
+
+writeFile('predict_by_age',passenger_id_survived_by_age_list)
+
+# <codecell>
 
 
