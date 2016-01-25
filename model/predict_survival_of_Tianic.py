@@ -73,7 +73,8 @@ def predictSurvivedProbabilityByAge( survived_child_probability,\
                                      survived_youth_probability,\
                                      survived_middle_age_probability,\
                                      survived_old_people_probability,\
-                                     survived_num,passenger_id_list,\
+                                     survived_num,\
+                                     passenger_id_list,\
                                      age_list):
 
     sur_pro_age_list = []
@@ -96,6 +97,35 @@ def predictSurvivedProbabilityByAge( survived_child_probability,\
 
 # <codecell>
 
+def predictSurvivedProbabilityByFare(survived_third_class_probability,\
+                                     survived_second_class_probability,\
+                                     survived_first_class_probability,\
+                                     survived_num,\
+                                     passenger_id_list,\
+                                     fare_list):
+
+    sur_pro_fare_list = []
+    
+    # third-class-fare: 0--12 second-class-fare: 13--29 first-class_fare: >=30
+
+    for i in fare_list:
+        if i <= 12:
+            sur_pro_fare_list.append(survived_third_class_probability)
+        elif i >= 13 and i <= 29:
+            sur_pro_fare_list.append(survived_second_class_probability)
+        else :
+            sur_pro_fare_list.append(survived_first_class_probability)
+               
+    sur_pro_id_fare_list = map(None,passenger_id_list,sur_pro_fare_list)
+    return sur_pro_id_fare_list
+
+# <codecell>
+
+def predictSurProByTwoFeatures(id_feature_one_list,id_feature_two_list):
+    
+
+# <codecell>
+
 def flagSurvivivedByOneFeature(passenger_id_feature_list):
     passenger_id_survived_list = []
     
@@ -109,8 +139,6 @@ def flagSurvivivedByOneFeature(passenger_id_feature_list):
 
 # <codecell>
 
-def predictSurvivedByAge(passenger_id_list,sex_list):
-    pass
 
 # <codecell>
 
@@ -224,9 +252,9 @@ test_data_list = readFile(test_data_path)
 # [['PassengerId', 'Sex', 'Age', 'Fare'],...]
 
 test_category_record_list = []
-for i in xrange(3):
+for i in xrange(4):
     test_category_record_list.append(filterDataByCategory(test_data_list,i))
-
+    
 test_data_num = len(test_category_record_list[0])
 survived_num = int(test_data_num * survived_probability)#160
 
@@ -254,6 +282,19 @@ survived_pro_age_list = predictSurvivedProbabilityByAge( survived_child_probabil
 passenger_id_survived_by_age_list = flagSurvivivedByOneFeature(survived_pro_age_list)
 
 writeFile('predict_by_age',passenger_id_survived_by_age_list)
+
+# <codecell>
+
+survived_pro_fare_list = predictSurvivedProbabilityByFare( survived_third_class_probalibity,\
+                                                           survived_second_class_probalibity,\
+                                                           survived_first_class_probalibity,\
+                                                           survived_num,\
+                                                           test_category_record_list[0],\
+                                                           test_category_record_list[3])
+
+passenger_id_survived_by_fare_list = flagSurvivivedByOneFeature(survived_pro_fare_list)
+
+writeFile('predict_by_fare',passenger_id_survived_by_fare_list)
 
 # <codecell>
 
