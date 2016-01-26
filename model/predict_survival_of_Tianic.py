@@ -66,7 +66,8 @@ def predictSurvivedProbabilityBySex(survived_male_probability,\
             sur_pro_sex_list.append(survived_male_probability)
         else:
             sur_pro_sex_list.append(survived_female_probability)
-    sur_pro_id_sex_list = map(None,passenger_id_list,sur_pro_sex_list)
+    
+    sur_pro_id_sex_list = map(None,passenger_id_list,sur_pro_sex_list)  
     return sur_pro_id_sex_list
 
 # <codecell>
@@ -133,13 +134,13 @@ def predictSurProByTwoFeatures(passenger_id_list,id_feature_one_list,id_feature_
 
 def flagSurvivivedByOneFeature(passenger_id_feature_list,survived_num):
     passenger_id_survived_list = []
-    
-    passenger_id_feature_list.sort(key = lambda x: x[1])
+    id_feature_list = passenger_id_feature_list[:]
+    id_feature_list.sort(key = lambda x: x[1])
     passenger_id_survived_list \
-    = map(lambda x: (x[0],1),passenger_id_feature_list[-survived_num:])\
-    + map(lambda x: (x[0],0),passenger_id_feature_list[:-survived_num])
+    = map(lambda x: (x[0],1),id_feature_list[-survived_num:])\
+    + map(lambda x: (x[0],0),id_feature_list[:-survived_num])
         
-    passenger_id_survived_list.sort(key = lambda x:x[0])  
+    passenger_id_survived_list.sort(key = lambda x:x[0]) 
     return passenger_id_survived_list
 
 # <codecell>
@@ -268,7 +269,10 @@ survived_pro_sex_list = predictSurvivedProbabilityBySex(survived_male_probabilit
                                                    test_category_record_list[0],\
                                                    test_category_record_list[1])
 
+
 passenger_id_survived_by_sex_list = flagSurvivivedByOneFeature(survived_pro_sex_list,survived_num)
+
+
 
 writeFile('predict_by_sex',passenger_id_survived_by_sex_list)
 
@@ -319,7 +323,7 @@ sur_pro_id_sex_fare_list = predictSurProByTwoFeatures(test_category_record_list[
 id_survived_by_sex_fare_list = flagSurvivivedByOneFeature(sur_pro_id_sex_fare_list,\
                                                           survived_num)
 writeFile('predict_by_sex_fare',id_survived_by_sex_fare_list)
-# accurancy rate : 0.58852
+
 
 # <codecell>
 
@@ -340,6 +344,10 @@ sur_pro_id_sex_age_fare_list = predictSurProByTwoFeatures(test_category_record_l
 id_survived_by_sex_age_fare_list = flagSurvivivedByOneFeature(sur_pro_id_sex_age_fare_list,\
                                                               survived_num)
 writeFile('predict_by_sex_age_fare',id_survived_by_sex_age_fare_list)
+
+
+# <codecell>
+
 
 # <codecell>
 
