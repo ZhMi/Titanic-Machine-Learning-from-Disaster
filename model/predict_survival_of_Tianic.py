@@ -15,7 +15,7 @@
 #                   flie contains PassengerId,Age,Sex,Fare four main fields.And the difference is the handled_train includes
 #                   survived filed additionally.
 # Author:           zhmi
-# E-mail:           zhmi120@sina.com
+# E-mail:           
 # Create:           2016-1-25
 # Recent-changes:   2016-1-25
 
